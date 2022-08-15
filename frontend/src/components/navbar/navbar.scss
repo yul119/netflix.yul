@@ -1,0 +1,95 @@
+.navbar {
+  width: 100%;
+  color: white;
+  position: fixed;
+  top: 0;
+  z-index: 999;
+  background: linear-gradient(
+    to top,
+    transparent 0%,
+    rgb(0, 0, 0, 0.3) 50%
+  );
+
+  &.scrolled {
+    background-color: var(--main-color);
+  }
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px;
+    height: 100px;
+
+    .left {
+      display: flex;
+      align-items: center;
+      img {
+        height: 25px;
+        margin-right: 20px;
+      }
+      span {
+        font-size: 18px;
+        margin: 0 15px;
+        cursor: pointer;
+        &:hover {
+          color: rgb(200, 200, 200);
+        }
+      }
+      a {
+        color: white;
+        text-decoration: none;
+      }
+    }
+
+    .right {
+      display: flex;
+      align-items: center;
+
+      .icon {
+        margin-left: 20px;
+        cursor: pointer;
+      }
+
+      span {
+        font-size: 18px;
+        margin-left: 20px;
+        cursor: pointer;
+        &:hover {
+          color: rgb(184, 184, 184);
+        }
+      }
+
+      .profile {
+        img {
+          margin-left: 20px;
+          width: 32px;
+          height: 32px;
+          border-radius: 5px;
+          object-fit: cover;
+          cursor: pointer;
+        }
+
+        .options {
+          display: none;
+          background-color: var(--main-color);
+          border-radius: 5px;
+        }
+
+        span {
+          padding: 10px 0;
+          margin-right: 20px;
+          cursor: pointer;
+        }
+
+        &:hover {
+          .options {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+          }
+        }
+      }
+    }
+  }
+}

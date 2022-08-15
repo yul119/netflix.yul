@@ -1,0 +1,94 @@
+.Register {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 100%
+    ),
+    url('https://assets.nflxext.com/ffe/siteui/vlv3/c8c8a0ad-86d6-45f1-b21d-821afa4e5027/394ec6ba-c9f1-43e7-81ce-27603aa0ab74/VN-en-20220801-popsignuptwoweeks-perspective_alpha_website_large.jpg');
+  background-size: cover;
+  position: relative;
+
+  .top {
+    .wrapper {
+      padding: 20px 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .logo {
+        height: 40px;
+      }
+
+      .loginButton {
+        background-color: red;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        padding: 10px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+    }
+  }
+  .registerPage {
+    max-width: 450px;
+    margin: auto;
+    color: #444;
+    padding: 0 15px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px 45px 30px 45px;
+    border-radius: 5px;
+    h2 {
+      text-transform: uppercase;
+      font-size: 2rem;
+      margin: 20px 0;
+      letter-spacing: 1.5px;
+    }
+    input {
+      width: 95%;
+      height: 45px;
+      margin: 10px 0;
+      border: 2px solid #777;
+      border-radius: 5px;
+      outline: none;
+      padding: 0 10px;
+    }
+    label {
+      color: white;
+      font-weight: 700;
+      font-size: 20px;
+    }
+    .row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap-reverse;
+      align-items: flex-start;
+      a {
+        color: crimson;
+      }
+      button {
+        background-color: red;
+        width: 100%;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        padding: 15px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 30px;
+        margin-bottom: 15px;
+      }
+    }
+    p {
+      margin: 10px 0;
+    }
+    a {
+      color: #111;
+      font-weight: 600;
+    }
+  }
+}
