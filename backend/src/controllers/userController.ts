@@ -1,5 +1,18 @@
 import Users from '../models/userModel';
 import customRespond from '../helper/customRespond';
+import cloudinary from 'cloudinary';
+import {
+  CLOUD_API_KEY,
+  CLOUD_API_SECRET,
+  CLOUD_NAME,
+} from '../constant';
+import removeTmp from '../helper/removeTmp';
+
+cloudinary.v2.config({
+  cloud_name: CLOUD_NAME,
+  api_key: CLOUD_API_KEY,
+  api_secret: CLOUD_API_SECRET,
+});
 
 const userController = {
   getUserInfor: async (req, res) => {
@@ -45,7 +58,30 @@ const userController = {
       return customRespond(res, 500, error.message);
     }
   },
-  uploadAvt: async (req, res) => {},
+  uploadAvatar: (req, res) => {
+    try {
+      const file = req.files.file;
+
+      cloudinary.v2.uploader.upload(
+        file.tempFilePath,
+        {
+          folder: 'avatar',
+          width: 150,
+          height: 150,
+          crop: 'fill',
+        },
+        (err, result) => {
+          if (err) throw err;
+
+          removeTmp(file.tempFilePath);
+
+          res.json({ url: result.secure_url });
+        }
+      );
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
 };
 
 export default userController;

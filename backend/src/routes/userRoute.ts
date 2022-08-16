@@ -27,7 +27,7 @@ router.delete(
 router.post(
   '/upload-avatar',
   uploadImg,
-  userController.uploadAvt
+  userController.uploadAvatar
 );
 
 export default router;

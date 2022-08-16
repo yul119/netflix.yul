@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import fileUpload from 'express-fileupload';
 
 import authRoute from './routes/authRoute';
 import userRoute from './routes/userRoute';
@@ -19,6 +20,11 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  fileUpload({
+    useTempFiles: true,
+  })
+);
 
 /////////////////////////////////////////////
 const URL = MONGODB_URL;
