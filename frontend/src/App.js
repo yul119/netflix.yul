@@ -20,6 +20,7 @@ import {
 import NotFound from './pages/notfound/Notfound';
 import ForgotPassword from './pages/forgotPass/ForgotPass';
 import ResetPassword from './pages/resetPass/ResetPass';
+import Profile from './pages/profile/Profile';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -78,6 +79,10 @@ const App = () => {
             <Navigate to='/login' replace />
           )
         }
+      />
+      <Route
+        path='/profile'
+        element={auth.isLogin ? <Profile /> : <NotFound />}
       />
       <Route
         path='/register'

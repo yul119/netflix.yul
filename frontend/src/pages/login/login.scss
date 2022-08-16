@@ -88,10 +88,37 @@
     display: flex;
     justify-content: space-between;
     .google {
-      width: 49%;
+      width: 48%;
+      button {
+        border-radius: 5px !important;
+        div {
+          padding-left: 15px !important;
+          svg {
+            margin-top: 3px;
+          }
+        }
+        span {
+          padding: 10px;
+          font-weight: 500;
+          letter-spacing: -1px;
+          font-size: 15px;
+        }
+      }
     }
     .facebook {
-      width: 49%;
+      width: 48%;
+      span {
+        button {
+          padding-top: 14px;
+          border-radius: 5px;
+          font-size: 15px;
+          letter-spacing: -1px;
+          font-family: 'Montserrat', sans-serif;
+          &:hover {
+            background-color: #415ba3;
+          }
+        }
+      }
     }
     button {
       width: 100%;

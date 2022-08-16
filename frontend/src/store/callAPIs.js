@@ -63,6 +63,19 @@ export const userAPIs = {
     });
     return res;
   },
+  uploadAvt: async (payload, token) => {
+    const res = await axios.post(
+      '/user/upload-avatar',
+      payload,
+      {
+        headers: {
+          'content-type': 'multipart/form-data',
+          Authorization: token,
+        },
+      }
+    );
+    return res;
+  },
 };
 
 export const listAPIs = {
