@@ -7,6 +7,16 @@ import {
   tokenSelector,
 } from '../../store/selector';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import { authAPIs, userAPIs } from '../../store/callAPIs';
+import {
+  isLength,
+  isMatch,
+} from '../../utils/validation/validation';
+import {
+  showErrMsg,
+  showSuccessMsg,
+} from '../../utils/notification/notification';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const initialState = {
   name: '',
@@ -20,6 +30,8 @@ const Profile = () => {
   const { token } = useSelector(tokenSelector);
   const { user } = useSelector(authSelector);
   console.log(token, user);
+
+  const navigate = useNavigate();
 
   const [data, setData] = useState(initialState);
   const { name, password, cf_password, err, success } =
@@ -38,6 +50,116 @@ const Profile = () => {
     });
   };
 
+  const changeAvatar = async (e) => {
+    e.preventDefault();
+    try {
+      const file = e.target.files[0];
+
+      if (!file)
+        return setData({
+          ...data,
+          err: 'No files were uploaded.',
+          success: '',
+        });
+
+      if (file.size > 1024 * 1024)
+        return setData({
+          ...data,
+          err: 'Size too large.',
+          success: '',
+        });
+
+      if (
+        file.type !== 'image/jpeg' &&
+        file.type !== 'image/png'
+      )
+        return setData({
+          ...data,
+          err: 'File format is incorrect.',
+          success: '',
+        });
+
+      let formData = new FormData();
+      formData.append('file', file);
+
+      setLoading(true);
+      const res = await userAPIs.uploadAvt(formData, token);
+
+      setLoading(false);
+      setAvatar(res.data.url);
+    } catch (err) {
+      setData({
+        ...data,
+        err: err.response.data.msg,
+        success: '',
+      });
+    }
+  };
+
+  const updateInfor = () => {
+    try {
+      userAPIs.updateUser(
+        name ? name : user.name,
+        avatar ? avatar : user.avatar,
+        token
+      );
+      setData({
+        ...data,
+        err: '',
+        success: 'Updated Success!',
+      });
+    } catch (err) {
+      setData({
+        ...data,
+        err: err.response.data.msg,
+        success: '',
+      });
+    }
+  };
+
+  const updatePassword = () => {
+    if (isLength(password))
+      return setData({
+        ...data,
+        err: 'Password must be at least 6 characters.',
+        success: '',
+      });
+
+    if (!isMatch(password, cf_password))
+      return setData({
+        ...data,
+        err: 'Password did not match.',
+        success: '',
+      });
+
+    try {
+      authAPIs.apiResetPass(password, token);
+
+      setData({
+        ...data,
+        err: '',
+        success: 'Updated Success!',
+        password: '',
+        cf_password: '',
+      });
+    } catch (err) {
+      setData({
+        ...data,
+        err: err.response.data.msg,
+        success: '',
+      });
+    }
+  };
+
+  const handleUpdate = () => {
+    console.log(data);
+    if (name || avatar) {
+      updateInfor();
+      navigate(0);
+    }
+    if (password) updatePassword();
+  };
+
   return (
     <div>
       <Navbar />
@@ -46,7 +168,9 @@ const Profile = () => {
           <div className='left'>
             <div className='avatar'>
               <img
-                src={avatar ? avatar : user.avatar}
+                src={
+                  !user ? '' : avatar ? avatar : user.avatar
+                }
                 alt=''
               />
               <span>
@@ -62,19 +186,21 @@ const Profile = () => {
                   type='file'
                   name='file'
                   id='file_up'
-                  //   onChange={changeAvatar}
+                  onChange={changeAvatar}
                 />
               </span>
             </div>
           </div>
           <div className='right'>
+            {err && showErrMsg(err)}
+            {success && showSuccessMsg(success)}
             <div className='form-group'>
               <input
                 type='text'
                 name='name'
                 id='name'
-                defaultValue={user.userName}
-                placeholder={user.userName}
+                defaultValue={!user ? '' : user.userName}
+                placeholder={!user ? '' : user.userName}
                 onChange={handleChange}
               />
             </div>
@@ -84,7 +210,7 @@ const Profile = () => {
                 type='email'
                 name='email'
                 id='email'
-                defaultValue={user.email}
+                defaultValue={!user ? '' : user.email}
                 placeholder='Your email address'
                 disabled
               />
@@ -114,7 +240,7 @@ const Profile = () => {
             <div className='btn'>
               <button
                 disabled={loading}
-                // onClick={handleUpdate}
+                onClick={handleUpdate}
               >
                 Update
               </button>

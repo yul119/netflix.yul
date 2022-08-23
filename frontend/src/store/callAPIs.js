@@ -52,6 +52,12 @@ export const authAPIs = {
     });
     return res;
   },
+  apiFacebookLogin: async (accessToken, userID) => {
+    return await axios.post('/auth/facebook-login', {
+      accessToken,
+      userID,
+    });
+  },
 };
 
 //////// User routes //////////////
@@ -76,11 +82,23 @@ export const userAPIs = {
     );
     return res;
   },
+  updateUser: async (userName, avatar, token) => {
+    const res = await axios.patch(
+      '/user/update',
+      {
+        userName,
+        avatar,
+      },
+      {
+        headers: { Authorization: token },
+      }
+    );
+  },
 };
 
 export const listAPIs = {
   getList: async (type, genre) => {
-    const res = axios.get(
+    const res = await axios.get(
       `/list${type ? '?type=' + type : ''}${
         genre ? '&genre=' + genre : ''
       }`

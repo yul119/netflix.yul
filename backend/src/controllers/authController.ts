@@ -12,11 +12,11 @@ import {
 import sendEmail from '../helper/sendEmail';
 import customRespond from '../helper/customRespond';
 import { google } from 'googleapis';
-import fetch from 'node-fetch';
+import axios from 'axios';
 
 const { OAuth2 } = google.auth;
 const client = new OAuth2(
-  '310055488729-26ou1ufirli5omtmi53cg41qj5ejlee9.apps.googleusercontent.com'
+  '72806306355-0omeoof2j8b4d2pi67b1tpvf4upp4hh1.apps.googleusercontent.com'
 );
 
 const authController = {
@@ -60,7 +60,7 @@ const authController = {
       customRespond(
         res,
         200,
-        'Register success! Please check email to activate your account.'
+        'Register success! Check email to activate account.'
       );
     } catch (err) {
       return customRespond(res, 500, err.message);
@@ -228,70 +228,140 @@ const authController = {
     try {
       const { tokenId } = req.body;
       console.log('tokenId: ', tokenId);
-      // const verify = await client.verifyIdToken({
-      //   idToken: tokenId,
-      //   audience:
-      //     '310055488729-26ou1ufirli5omtmi53cg41qj5ejlee9.apps.googleusercontent.com',
-      // });
-      // console.log(verify);
+      const verify = (await client.verifyIdToken({
+        idToken: tokenId,
+        audience:
+          '72806306355-0omeoof2j8b4d2pi67b1tpvf4upp4hh1.apps.googleusercontent.com',
+      })) as any;
+      console.log('verify: ', verify.payload);
 
-      // const { email_verified, email, name, picture } =
-      //   verify.payload;
+      const { email_verified, email, name, picture } =
+        verify.payload;
 
-      // const password = email + process.env.GOOGLE_SECRET;
+      const password = email + process.env.GOOGLE_SECRET;
 
-      // const passwordHash = await bcrypt.hash(password, 12);
+      const passwordHash = await bcrypt.hash(password, 12);
 
-      // if (!email_verified)
-      //   return res
-      //     .status(400)
-      //     .json({ msg: 'Email verification failed.' });
+      if (!email_verified)
+        return res
+          .status(400)
+          .json({ msg: 'Email verification failed.' });
 
-      // const user = await Users.findOne({ email });
+      const user = await Users.findOne({ email });
 
-      // if (user) {
-      //   const isMatch = await bcrypt.compare(
-      //     password,
-      //     user.password
-      //   );
-      //   if (!isMatch)
-      //     return customRespond(
-      //       res,
-      //       400,
-      //       'Password is incorrect.'
-      //     );
+      if (user) {
+        const isMatch = await bcrypt.compare(
+          password,
+          user.password
+        );
+        if (!isMatch)
+          return customRespond(
+            res,
+            400,
+            'Password is incorrect.'
+          );
+        const refreshToken = createRefreshToken({
+          id: user._id,
+        });
+        res.cookie('refreshToken', refreshToken, {
+          httpOnly: true,
+          path: '/auth/refresh',
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
 
-      //   const refreshToken = createRefreshToken({
-      //     id: user._id,
-      //   });
-      //   res.cookie('refreshtoken', refreshToken, {
-      //     httpOnly: true,
-      //     path: '/auth/refresh',
-      //     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      //   });
+        customRespond(res, 200, 'Login success!');
+      } else {
+        const newUser = new Users({
+          userName: name,
+          email,
+          password: passwordHash,
+          avatar: picture,
+        });
 
-      //   res.json({ msg: 'Login success!' });
-      // } else {
-      //   const newUser = new Users({
-      //     name,
-      //     email,
-      //     password: passwordHash,
-      //     avatar: picture,
-      //   });
+        await newUser.save();
 
-      //   await newUser.save();
+        const refreshToken = createRefreshToken({
+          id: newUser._id,
+        });
+        res.cookie('refreshToken', refreshToken, {
+          httpOnly: true,
+          path: '/auth/refresh',
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
 
-      //   const refreshToken = createRefreshToken({
-      //     id: newUser._id,
-      //   });
-      //   res.cookie('refreshtoken', refreshToken, {
-      //     httpOnly: true,
-      //     path: '/auth/refresh',
-      //     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      //   });
+        res.json({ msg: 'Login success!' });
+      }
+    } catch (err) {
+      return customRespond(res, 500, err.message);
+    }
+  },
 
-      //   res.json({ msg: 'Login success!' });
-      // }
+  facebookLogin: async (req, res) => {
+    try {
+      const { accessToken, userID } = req.body;
+
+      const URL = `https://graph.facebook.com/v2.9/${userID}/?fields=id,name,email,picture&access_token=${accessToken}`;
+
+      // const data = (await fetch(URL)
+      //   .then((res) => res.json())
+      //   .then((res) => {
+      //     return res;
+      //   })) as any;
+
+      const data = (await axios(URL).then(
+        (res) => res.data
+      )) as any;
+
+      const { email, name, picture } = data;
+
+      const password = email + process.env.GOOGLE_SECRET;
+
+      const passwordHash = await bcrypt.hash(password, 12);
+
+      const user = await Users.findOne({ email });
+
+      if (user) {
+        const isMatch = await bcrypt.compare(
+          password,
+          user.password
+        );
+        if (!isMatch)
+          return customRespond(
+            res,
+            400,
+            'Password is incorrect.'
+          );
+        const refreshToken = createRefreshToken({
+          id: user._id,
+        });
+        res.cookie('refreshToken', refreshToken, {
+          httpOnly: true,
+          path: '/auth/refresh',
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        customRespond(res, 200, 'Login success!');
+      } else {
+        const newUser = new Users({
+          userName: name,
+          email,
+          password: passwordHash,
+          avatar: picture.data.url,
+        });
+
+        await newUser.save();
+
+        const refreshToken = createRefreshToken({
+          id: newUser._id,
+        });
+        res.cookie('refreshToken', refreshToken, {
+          httpOnly: true,
+          path: '/auth/refresh',
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+
+        res.json({ msg: 'Login success!' });
+      }
     } catch (err) {
       return customRespond(res, 500, err.message);
     }

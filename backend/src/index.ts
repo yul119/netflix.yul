@@ -8,8 +8,8 @@ import fileUpload from 'express-fileupload';
 
 import authRoute from './routes/authRoute';
 import userRoute from './routes/userRoute';
-import listRouter from './routes/listRoute';
-import movieRouter from './routes/movieRoute';
+import listRoute from './routes/listRoute';
+import movieRoute from './routes/movieRoute';
 import { MONGODB_URL } from './constant';
 
 dotenv.config();
@@ -42,8 +42,8 @@ mongoose.connect(
 /////////////////////////////////////////////
 app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
-app.use('/api/list', listRouter);
-app.use('/api/movie', movieRouter);
+app.use('/api/list', listRoute);
+app.use('/api/movie', movieRoute);
 
 /////////////////////////////////////////////
 const port = process.env.PORT || 5000;

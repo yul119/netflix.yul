@@ -42,7 +42,7 @@ const List = ({ list }) => {
         <div className='container' ref={listRef}>
           {list.movies.map((item, i) => {
             // console.log(item);
-            return <ListItem i={i} movie={item} />;
+            return <ListItem key={i} i={i} movie={item} />;
           })}
         </div>
         <div

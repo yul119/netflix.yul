@@ -34,5 +34,9 @@ router.post(
 );
 router.get('/logout', authController.logout);
 router.post('/google-login', authController.googleLogin);
+router.post(
+  '/facebook-login',
+  authController.facebookLogin
+);
 
 export default router;

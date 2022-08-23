@@ -14,10 +14,10 @@
   align-items: center;
 
   .container {
-    width: 50vw;
-    height: 60vh;
+    width: 60vw;
+    height: 65vh;
     display: flex;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
 
     .left {
       flex-grow: 1;
@@ -70,7 +70,7 @@
     }
     .right {
       margin: auto;
-      padding: 0 15px;
+      padding: 0 25px;
       flex-grow: 3;
       display: flex;
       flex-direction: column;
@@ -80,16 +80,15 @@
         justify-content: center;
         align-items: center;
 
-        padding: 10px;
         label {
           color: white;
           font-weight: 700;
           font-size: 24px;
         }
         input {
-          width: 90%;
+          width: 100%;
           height: 45px;
-          margin: -2px;
+          margin: 10px 0;
           border: 2px solid #777;
           border-radius: 5px;
           outline: none;
@@ -107,7 +106,7 @@
 
         button {
           background-color: red;
-          width: 90%;
+          width: 100%;
           border: none;
           color: white;
           border-radius: 5px;

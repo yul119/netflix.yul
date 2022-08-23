@@ -11,6 +11,7 @@
   "author": "yul",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.30.1",
     "cookie-parser": "^1.4.6",
@@ -22,7 +23,6 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.0",
     "morgan": "^1.10.0",
-    "node-fetch": "^3.2.10",
     "nodemailer": "^6.7.7"
   },
   "devDependencies": {
