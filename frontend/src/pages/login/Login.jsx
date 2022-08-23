@@ -137,6 +137,16 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+    if (err) showErrMsg(err);
+    if (success) showSuccessMsg(success);
+    setUser({
+      ...user,
+      err: '',
+      success: '',
+    });
+  }, [err, success]);
+
   return (
     <div className='login'>
       <div className='top'>
@@ -150,8 +160,8 @@ const Login = () => {
       </div>
 
       <div className='loginPage'>
-        {err && showErrMsg(err)}
-        {success && showSuccessMsg(success)}
+        {/* {err && showErrMsg(err)}
+        {success && showSuccessMsg(success)} */}
         <form onSubmit={handleSubmit}>
           <div>
             {/* <label htmlFor='email'>Email Address</label> */}

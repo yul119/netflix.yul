@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './profile.scss';
 import Navbar from '../../components/navbar/Navbar';
 import { useSelector } from 'react-redux';
@@ -16,7 +16,7 @@ import {
   showErrMsg,
   showSuccessMsg,
 } from '../../utils/notification/notification';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const initialState = {
   name: '',
@@ -159,7 +159,15 @@ const Profile = () => {
     }
     if (password) updatePassword();
   };
-
+  useEffect(() => {
+    if (err) showErrMsg(err);
+    if (success) showSuccessMsg(success);
+    setData({
+      ...user,
+      err: '',
+      success: '',
+    });
+  }, [err, success]);
   return (
     <div>
       <Navbar />
@@ -192,8 +200,8 @@ const Profile = () => {
             </div>
           </div>
           <div className='right'>
-            {err && showErrMsg(err)}
-            {success && showSuccessMsg(success)}
+            {/* {err && showErrMsg(err)} */}
+            {/* {success && showSuccessMsg(success)} */}
             <div className='form-group'>
               <input
                 type='text'

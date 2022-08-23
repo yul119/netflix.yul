@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './register.scss';
 import { Link } from 'react-router-dom';
 import {
@@ -93,7 +93,15 @@ const Register = () => {
         });
     }
   };
-
+  useEffect(() => {
+    if (err) showErrMsg(err);
+    if (success) showSuccessMsg(success);
+    setUser({
+      ...user,
+      err: '',
+      success: '',
+    });
+  }, [err, success]);
   return (
     <div className='Register'>
       <div className='top'>
@@ -110,8 +118,8 @@ const Register = () => {
       </div>
 
       <div className='registerPage'>
-        {err && showErrMsg(err)}
-        {success && showSuccessMsg(success)}
+        {/* {err && showErrMsg(err)} */}
+        {/* {success && showSuccessMsg(success)} */}
         <br />
 
         <form onSubmit={handleSubmit}>
